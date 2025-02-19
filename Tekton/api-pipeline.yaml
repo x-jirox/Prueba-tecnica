@@ -1,0 +1,28 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: api-pipeline
+spec:
+  tasks:
+  - name: build-image
+    taskRef:
+      name: buildah
+    resources:
+      inputs:
+        - name: source
+          resource: git-source
+      outputs:
+        - name: image
+          resource: image
+    params:
+      - name: image
+        value: "your-docker-repo/api-backend:latest"
+
+  - name: deploy-to-k8s
+    taskRef:
+      name: kubectl
+    params:
+      - name: action
+        value: "apply"
+      - name: resource
+        value: "path/to/k8s-manifests"

@@ -3,7 +3,8 @@ kind: ConfigMap
 metadata:
   name: api-config
 data:
-  DB_HOST: "mysql-service"
-  DB_NAME: "visits_db"
+  DB_HOST: "mysql-db"
   DB_USER: "root"
+  DB_PASSWORD: "1234"
+  DB_NAME: "visits_db"
   PORT: "3000"
