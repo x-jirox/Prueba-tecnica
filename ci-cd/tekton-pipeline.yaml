@@ -1,0 +1,28 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: deploy-api
+spec:
+  tasks:
+    - name: build-image
+      taskRef:
+        name: buildah
+      params:
+        - name: IMAGE
+          value: "tu-registro/api:latest"
+    - name: push-image
+      taskRef:
+        name: push-image
+      runAfter: ["build-image"]
+      params:
+        - name: IMAGE
+          value: "tu-registro/api:latest"
+    - name: deploy-api
+      taskRef:
+        name: kubectl-task
+      runAfter: ["push-image"]
+      params:
+        - name: SCRIPT
+          value: |
+            kubectl apply -f /workspace/k8s/api-deployment.yaml
+            kubectl apply -f /workspace/k8s/mysql-deployment.yaml
